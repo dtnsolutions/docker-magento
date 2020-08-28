@@ -1,5 +1,6 @@
 .vscode
 *.code-workspace
+src/
 certs/**
 !certs/default.crt
 !certs/default.key
