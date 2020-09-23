@@ -49,6 +49,7 @@ services:
       - 9300
     environment:
       - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms256m -Xmx25m"
 
   rabbitmq:
     image: rabbitmq:3.7-management
@@ -57,6 +58,7 @@ services:
       - 5672
     volumes:
       - rabbitmqdata:/var/lib/rabbitmq
+
 
   # Disabling cron by default as it uses higher CPU, enable if needed
   #cron:
