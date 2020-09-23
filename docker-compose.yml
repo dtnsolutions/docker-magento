@@ -49,7 +49,9 @@ services:
       - 9300
     environment:
       - "discovery.type=single-node"
-      - "ES_JAVA_OPTS=-Xms256m -Xmx25m"
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
 
   rabbitmq:
     image: rabbitmq:3.7-management
@@ -73,6 +75,7 @@ services:
 volumes:
   appdata:
   dbdata:
+  esdata:
   rabbitmqdata:
   sockdata:
   ssldata:
