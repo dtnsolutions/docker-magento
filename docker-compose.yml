@@ -32,7 +32,7 @@ services:
     volumes: *appvolumes
 
   db:
-    image: mysql:8.0
+    image: percona:5.7
     expose:
       - 3306
     env_file: env/db.env
@@ -40,7 +40,7 @@ services:
       - dbdata:/var/lib/mysql
 
   redis:
-    image: redis:5.0
+    image: redis:5.0-alpine
 
   elasticsearch:
     image: markoshust/magento-elasticsearch:7.6.2-2
@@ -54,7 +54,7 @@ services:
       - esdata:/usr/share/elasticsearch/data
 
   rabbitmq:
-    image: rabbitmq:3.7-management
+    image: rabbitmq:3.7-management-alpine
     expose:
       - 15672
       - 5672
@@ -83,4 +83,4 @@ volumes:
 networks:
   nginx-proxy:
     external:
-      name: nginx-proxy_nginx-proxy
+      name: docker-nginx-proxy_nginx-proxy
