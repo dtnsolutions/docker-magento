@@ -1,13 +1,8 @@
-# Mark Shust's Docker Configuration for Magento
-# (https://github.com/markshust/docker-magento)
-#
-# Version 33.0.0
-
 version: "3"
 
 services:
   app:
-    build: images/nginx
+    image: dtnsolutions/magento-nginx:1.18-4
     expose:
       - 8443
     networks:
@@ -26,7 +21,7 @@ services:
       - ssldata:/etc/nginx/certs
 
   phpfpm:
-    build: images/php/7.4
+    build: dtnsolutions/magento-php:7.4-fpm-2
     links:
       - db
     volumes: *appvolumes
