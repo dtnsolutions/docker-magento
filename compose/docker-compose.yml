@@ -7,7 +7,7 @@ version: "3"
 
 services:
   app:
-    build: images/nginx
+    image: dtnsolutions/magento-nginx:1.18-4
     expose:
       - 8443
     networks:
@@ -26,13 +26,14 @@ services:
       - ssldata:/etc/nginx/certs
 
   phpfpm:
-    build: images/php/7.4
+    image:dtnsolutions/magento-php:7.4-fpm-2
     links:
       - db
     volumes: *appvolumes
 
   db:
     image: percona:5.7
+    command: --max_allowed_packet=64M
     expose:
       - 3306
     env_file: env/db.env
