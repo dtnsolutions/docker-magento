@@ -1,0 +1,8 @@
+#!/bin/bash
+git init -qqq
+git remote add origin https://github.com/dtnsolutions/docker-magento
+git fetch origin -qqq
+git checkout origin/master -- compose
+mv compose/* ./
+mv compose/.vscode ./
+rm -rf compose .git
