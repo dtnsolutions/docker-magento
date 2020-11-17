@@ -23,7 +23,8 @@ RUN apt-get update && apt-get install -y \
   default-mysql-client \
   vim \
   zip \
-  procps
+  procps \
+  rsync
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
@@ -106,7 +107,7 @@ COPY conf/php.ini /usr/local/etc/php/
 COPY conf/php-fpm.conf /usr/local/etc/
 COPY bin/cronstart /usr/local/bin/
 
-RUN mkdir -p /etc/nginx/html /var/www/html /sock \
+RUN mkdir -p /etc/nginx/html /var/www/html /var/www/deploy /sock \
   && chown -R app:app /etc/nginx /var/www /usr/local/etc/php/conf.d /sock
 
 USER app:app
