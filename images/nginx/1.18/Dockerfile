@@ -1,11 +1,8 @@
 FROM nginx:1.18-alpine
 LABEL maintainer="Hans Phung <hans@dtn.com.vn>"
 
-ARG UID=1000
-ARG GID=1000
-
-RUN addgroup -g ${GID} app \
- && adduser -G app -u ${UID} -h /var/www -s /bin/bash -S app
+RUN addgroup -g 1000 app \
+ && adduser -G app -u 1000 -h /var/www -s /bin/bash -S app
 RUN touch /var/run/nginx.pid
 RUN mkdir /sock
 
