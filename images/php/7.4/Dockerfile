@@ -93,7 +93,8 @@ COPY conf/php-fpm.conf /usr/local/etc/
 COPY bin/cronstart /usr/local/bin/
 
 RUN mkdir -p /etc/nginx/html /var/www/html /var/www/deploy /sock \
-  && chown -R app:app /etc/nginx /var/www /usr/local/etc/php/conf.d /sock
+  && chown -R app:app /etc/nginx /var/www /usr/local/etc/php/conf.d /sock \
+  && chmod +x /usr/local/bin/cronstart
 
 USER app:app
 
