@@ -3,20 +3,21 @@ version: "3"
 services:
   app:
     image: dtnsolutions/magento-nginx:1.18-4
-    expose:
-      - 8443
-    networks:
-      - nginx-proxy
-    environment:
-      VIRTUAL_HOST: magento2.localhost
-      VIRTUAL_PROTO: https
-      VIRTUAL_PORT: 8443
+    ports:
+      - "443:8443"
     links:
       - db
       - phpfpm
     volumes: &appvolumes
       - ~/.composer:/var/www/.composer:cached
       - appdata:/var/www/html
+      - ./shared/deploy:/var/www/deploy:cached
+      - ./share/app/etc/env.php:/var/www/html/app/etc/env.php:cached
+      - ./shared/pub/media:/var/www/html/pub/media:cached
+      - ./shared/var/log:/var/www/html/var/log:cached
+      - ./shared/var/backups:/var/www/html/var/backups:cached
+      - ./shared/var/session:/var/www/html/var/session:cached
+      - ./shared/var/report:/var/www/html/var/report:cached
       - sockdata:/sock
       - ssldata:/etc/nginx/certs
 
@@ -57,11 +58,23 @@ services:
     volumes:
       - rabbitmqdata:/var/lib/rabbitmq
 
+
   # Disabling cron by default as it uses higher CPU, enable if needed
   #cron:
-  #  image: markoshust/magento-php:7.4-fpm-2
+  #  image: dtnsolutions/magento-php:7.4-fpm-2
   #  user: root
   #  command: /usr/local/bin/cronstart
+  #  tty: true
+  #  links:
+  #    - db
+  #  volumes: *appvolumes
+
+  # SSH server, enable if needed
+  #ssh:
+  #  image: dtnsolutions/magento-php-ssh:7.4-fpm-2
+  #  ports:
+  #    - "2222:22"
+  #  command: /usr/sbin/sshd -D
   #  tty: true
   #  links:
   #    - db
@@ -74,8 +87,3 @@ volumes:
   rabbitmqdata:
   sockdata:
   ssldata:
-
-networks:
-  nginx-proxy:
-    external:
-      name: docker-nginx-proxy_nginx-proxy

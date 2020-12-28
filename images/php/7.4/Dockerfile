@@ -21,7 +21,8 @@ RUN apt-get update && apt-get install -y \
   vim \
   zip \
   procps \
-  rsync
+  rsync \
+  openssh-server
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
@@ -102,4 +103,4 @@ VOLUME /var/www
 
 WORKDIR /var/www/html
 
-EXPOSE 9001
+EXPOSE 22 9001
