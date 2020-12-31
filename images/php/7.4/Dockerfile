@@ -49,10 +49,13 @@ RUN docker-php-ext-install \
   zip
 
 RUN pecl channel-update pecl.php.net \
-  && pecl install xdebug
+  && pecl install xdebug \
+  && pecl install apcu
 
 RUN docker-php-ext-enable xdebug \
   && sed -i -e 's/^zend_extension/\;zend_extension/g' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+RUN docker-php-ext-enable apcu
 
 ## Replace next lines with below commented out version once issue is resolved
 # https://github.com/php/pecl-networking-ssh2/pull/36
