@@ -11,6 +11,7 @@ services:
       VIRTUAL_HOST: magento2.localhost
       VIRTUAL_PROTO: https
       VIRTUAL_PORT: 8443
+      CERT_NAME: default
     links:
       - db
       - phpfpm
