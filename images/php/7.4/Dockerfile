@@ -20,7 +20,9 @@ RUN apt-get update && apt-get install -y \
   default-mysql-client \
   vim \
   zip \
-  procps
+  procps \
+  rsync \
+  openssh-server
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
