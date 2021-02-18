@@ -53,8 +53,7 @@ RUN pecl channel-update pecl.php.net \
   && pecl install apcu
 
 RUN docker-php-ext-enable apcu \
-  && docker-php-ext-enable xdebug \
-  && sed -i -e 's/^zend_extension/\;zend_extension/g' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+  && docker-php-ext-enable xdebug
 
 ## Replace next lines with below commented out version once issue is resolved
 # https://github.com/php/pecl-networking-ssh2/pull/36
@@ -101,7 +100,7 @@ COPY conf/php.ini /usr/local/etc/php/
 COPY conf/php-fpm.conf /usr/local/etc/
 COPY bin/cronstart /usr/local/bin/
 
-RUN mkdir -p /etc/nginx/html /var/www/html /var/www/deploy /sock \
+RUN mkdir -p /etc/nginx/html /var/www/html /sock \
   && chown -R app:app /etc/nginx /var/www /usr/local/etc/php/conf.d /sock \
   && chmod +x /usr/local/bin/cronstart
 
