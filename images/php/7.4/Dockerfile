@@ -99,7 +99,7 @@ COPY bin/cronstart /usr/local/bin/
 
 RUN mkdir -p /etc/nginx/html /var/www/.ssh /var/www/html /sock \
   && chown -R app:app /etc/nginx /var/www /usr/local/etc/php/conf.d /sock \
-  && chmod +x /usr/local/bin/cronstart
+  && chmod +x /usr/local/bin/cronstart \
   && chmod 700 /var/www/.ssh
 
 USER app:app
