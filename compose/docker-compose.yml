@@ -29,6 +29,7 @@ services:
   phpfpm:
     image: dtnsolutions/magento-php:7.4-fpm-12
     volumes: *appvolumes
+    env_file: env/phpfpm.env
     ## extra_hosts is required for selenium
     ## For extra_hosts, replace "magento.test" with the URL of your site,
     ## and also replace 172.17.0.1 with the result of:
@@ -44,7 +45,7 @@ services:
       - dbdata:/var/lib/mysql
 
   redis:
-    image: redis:5.0-alpine
+    image: redis:6.0-alpine
 
   elasticsearch:
     image: markoshust/magento-elasticsearch:7.9.3-1
