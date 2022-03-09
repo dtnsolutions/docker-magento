@@ -3,12 +3,15 @@ set -o errexit
 
 # shellcheck source=../env/db.env
 source env/db.env
+# shellcheck source=../env/elasticsearch.env
+source env/elasticsearch.env
 # shellcheck source=../env/magento.env
 source env/magento.env
+# shellcheck source=../env/rabbitmq.env
+source env/rabbitmq.env
+
 
 DOMAIN=${1:-magento.test}
-ES_HOST=elasticsearch
-ES_PORT=9200
 
 bin/stop
 
@@ -16,10 +19,7 @@ docker-compose -f docker-compose.yml up -d
 [ $? != 0 ] && echo "Failed to start Docker services" && exit
 
 bin/clinotty chmod u+x bin/magento
-
-rm -rf src
-mkdir src
-cp -R .vscode src
+rm -rf src && mkdir src
 
 echo "Waiting for connection to Elasticsearch..."
 bin/clinotty timeout 100 bash -c "
@@ -30,8 +30,13 @@ bin/clinotty timeout 100 bash -c "
 [ $? != 0 ] && echo "Failed to connect to Elasticsearch" && exit
 
 echo ""
-echo "Waiting for Elasticsearch container to get initialized..."
-sleep 5
+echo "Waiting for connection to RabbitMQ..."
+rabbitmqi=10
+until [ $rabbitmqi -le 0 ]; do
+    printf '.'
+    (( rabbitmqi-- ))
+    sleep 2
+done
 
 bin/clinotty bin/magento setup:install \
   --db-host="$MYSQL_HOST" \
@@ -49,11 +54,11 @@ bin/clinotty bin/magento setup:install \
   --language="$MAGENTO_LOCALE" \
   --currency="$MAGENTO_CURRENCY" \
   --timezone="$MAGENTO_TIMEZONE" \
-  --amqp-host=rabbitmq \
-  --amqp-port=5672 \
-  --amqp-user=guest \
-  --amqp-password=guest \
-  --amqp-virtualhost=/ \
+  --amqp-host="$RABBITMQ_HOST" \
+  --amqp-port="$RABBITMQ_PORT" \
+  --amqp-user="$RABBITMQ_DEFAULT_USER" \
+  --amqp-password="$RABBITMQ_DEFAULT_PASS" \
+  --amqp-virtualhost="$RABBITMQ_DEFAULT_VHOST" \
   --cache-backend=redis \
   --cache-backend-redis-server=redis \
   --cache-backend-redis-db=0 \
@@ -67,7 +72,8 @@ bin/clinotty bin/magento setup:install \
   --search-engine=elasticsearch7 \
   --elasticsearch-host=$ES_HOST \
   --elasticsearch-port=$ES_PORT \
-  --use-rewrites=1
+  --use-rewrites=1 \
+  --no-interaction
 
 echo "Copying files from container to host after install..."
 bin/copyfromcontainer --all
@@ -84,14 +90,13 @@ bin/setup-domain "${DOMAIN}"
 echo "Clearing the cache to apply updates..."
 bin/clinotty bin/magento cache:flush
 
-echo "Ensuring Composer auth.json is setup..."
-bin/setup-composer-auth
+echo "Installing cron, run 'bin/cron start' to enable..."
+bin/clinotty bin/magento cron:install
 
-echo "Installing cron (see docker-compose.yml to enable)..."
-bin/magento cron:install
-
-echo "Turning on developer mode.."
+echo "Turning on developer mode..."
 bin/clinotty bin/magento deploy:mode:set developer
+
+mv .vscode src/
 
 echo "Docker development environment setup complete."
 echo "You may now access your Magento instance at https://${DOMAIN}/"
