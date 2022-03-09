@@ -39,8 +39,6 @@ services:
   db:
     image: mariadb:10.4
     command: --max_allowed_packet=64M
-    ports:
-      - "3306:3306"
     env_file: env/db.env
     volumes:
       - dbdata:/var/lib/mysql
@@ -61,9 +59,6 @@ services:
 
   rabbitmq:
     image: rabbitmq:3.8.22-management-alpine
-    ports:
-      - "15672:15672"
-      - "5672:5672"
     volumes:
       - rabbitmqdata:/var/lib/rabbitmq
     env_file: env/rabbitmq.env
