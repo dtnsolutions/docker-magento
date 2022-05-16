@@ -38,7 +38,7 @@ RUN apt-get update && apt-get install -y \
 RUN pecl channel-update pecl.php.net && pecl install \
     imagick \
     redis \
-    ssh2-1.3.1
+    ssh2-1.3.1 \
   && pecl clear-cache \
   && rm -rf /tmp/pear
 
