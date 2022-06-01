@@ -33,6 +33,7 @@ RUN apt-get update && apt-get install -y \
     procps \
     vim \
     zip \
+    rsync \
   && rm -rf /var/lib/apt/lists/*
 
 RUN pecl channel-update pecl.php.net && pecl install \
