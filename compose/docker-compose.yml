@@ -1,7 +1,7 @@
 ## Mark Shust's Docker Configuration for Magento
 ## (https://github.com/markshust/docker-magento)
 ##
-## Version 42.0.0
+## Version 43.2.0
 
 ## To use SSH, see https://github.com/markshust/docker-magento#ssh
 ## Linux users, see https://github.com/markshust/docker-magento#linux
@@ -14,7 +14,7 @@ version: "3"
 
 services:
   app:
-    image: dtnsolutions/magento-nginx:1.18-7
+    image: dtnsolutions/magento-nginx:1.18-8
     ports:
       - "80:8000"
       - "443:8443"
@@ -25,14 +25,22 @@ services:
       - appdata:/var/www/html
       - sockdata:/sock
       - ssldata:/etc/nginx/certs
+    #extra_hosts: &appextrahosts
+      ## Selenium support, replace "magento.test" with URL of your site
+      #- "magento.test:172.17.0.1"
 
   phpfpm:
-    image: dtnsolutions/magento-php:8.1-fpm-0
+    image: dtnsolutions/magento-php:8.1-fpm-1
     volumes: *appvolumes
+    env_file: env/phpfpm.env
+    #extra_hosts: *appextrahosts
 
   db:
     image: mariadb:10.4
-    command: --max_allowed_packet=64M
+    command:
+      --max_allowed_packet=64M
+      --optimizer_use_condition_selectivity=1
+      --optimizer_switch="rowid_filter=off"
     env_file: env/db.env
     volumes:
       - dbdata:/var/lib/mysql

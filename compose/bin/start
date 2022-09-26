@@ -3,7 +3,7 @@ set -o errexit
 
 MEM=$(docker info | grep "Total Memory" | cut -d':' -f2 | xargs | sed s/GiB//)
 # Docker reports RAM 0.2 less than what it is actually set to
-(( $(echo "$MEM < 5.8" | bc -l) )) && echo "There must be at least 6GB of RAM allocated to Docker to continue." && exit
+(( $(echo "$MEM < 5.7" | bc -l) )) && echo "There must be at least 6GB of RAM allocated to Docker to continue." && exit
 
 # Ref: https://stackoverflow.com/a/51789677/9821321
 function parseYaml {
@@ -52,7 +52,7 @@ done
 # Wait to exit until all missing files have been outputted to the user
 [ $IS_VALID = false ] && echo "Failed to start docker for missing volume files" && exit
 
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --remove-orphans "$@"
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --remove-orphans "$@"
 
 ## Blackfire support
 ## ------------------

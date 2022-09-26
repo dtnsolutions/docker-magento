@@ -5,7 +5,7 @@
   <img src="https://img.shields.io/badge/magento-2.X-brightgreen.svg?logo=magento&longCache=true" alt="Supported Magento Versions" />
   <a href="https://hub.docker.com/r/markoshust/magento-php/" target="_blank"><img src="https://img.shields.io/docker/pulls/markoshust/magento-php.svg?label=php%20docker%20pulls" alt="Docker Hub Pulls - PHP" /></a>
   <a href="https://hub.docker.com/r/markoshust/magento-nginx/" target="_blank"><img src="https://img.shields.io/docker/pulls/markoshust/magento-nginx.svg?label=nginx%20docker%20pulls" alt="Docker Hub Pulls - Nginx" /></a>
-  <a href="https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity" target="_blank"><img src="https://img.shields.io/badge/maintained%3F-yes-brightgreen.svg" alt="Maintained - Yes" /></a>
+  <a href="https://github.com/markshust/docker-magento/graphs/commit-activity" target="_blank"><img src="https://img.shields.io/badge/maintained%3F-yes-brightgreen.svg" alt="Maintained - Yes" /></a>
   <img src="https://img.shields.io/badge/apple%20silicon%20support-yes-brightgreen" alt="Apple Silicon Support" />
   <a href="https://opensource.org/licenses/MIT" target="_blank"><img src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
 </div>
@@ -28,10 +28,10 @@
 View Dockerfiles for the latest tags:
 
 - [markoshust/magento-nginx (Docker Hub)](https://hub.docker.com/r/markoshust/magento-nginx/)
-  - [`1.18`, `1.18-7`](https://github.com/markshust/docker-magento/tree/master/images/nginx/1.18)
+  - [`1.18`, `1.18-8`](https://github.com/markshust/docker-magento/tree/master/images/nginx/1.18)
 - [markoshust/magento-php (Docker Hub)](https://hub.docker.com/r/markoshust/magento-php/)
-  - [`8.1-fpm`, `8.1-fpm-0`](https://github.com/markshust/docker-magento/tree/master/images/php/8.1)
-  - [`7.4-fpm`, `7.4-fpm-14`](https://github.com/markshust/docker-magento/tree/master/images/php/7.4)
+  - [`8.1-fpm`, `8.1-fpm-1`](https://github.com/markshust/docker-magento/tree/master/images/php/8.1)
+  - [`7.4-fpm`, `7.4-fpm-15`](https://github.com/markshust/docker-magento/tree/master/images/php/7.4)
 - [markoshust/magento-elasticsearch (Docker Hub)](https://hub.docker.com/r/markoshust/magento-elasticsearch/)
   - [`7.16`, `7.16-0`](https://github.com/markshust/docker-magento/tree/master/images/elasticsearch/7.16)
 - [markoshust/magento-rabbitmq (Docker Hub)](https://hub.docker.com/r/markoshust/magento-rabbitmq/)
@@ -127,10 +127,10 @@ mkdir -p ~/Sites/magento
 cd $_
 
 # Run this automated one-liner from the directory you want to install your project.
-curl -s https://raw.githubusercontent.com/markshust/docker-magento/master/lib/onelinesetup | bash -s -- magento.test 2.4.4
+curl -s https://raw.githubusercontent.com/markshust/docker-magento/master/lib/onelinesetup | bash -s -- magento.test 2.4.5
 ```
 
-The `magento.test` above defines the hostname to use, and the `2.4.4` defines the Magento version to install. Note that since we need a write to `/etc/hosts` for DNS resolution, you will be prompted for your system password during setup.
+The `magento.test` above defines the hostname to use, and the `2.4.5` defines the Magento version to install. Note that since we need a write to `/etc/hosts` for DNS resolution, you will be prompted for your system password during setup.
 
 After the one-liner above completes running, you should be able to access your site at `https://magento.test`.
 
@@ -158,7 +158,7 @@ cd $_
 curl -s https://raw.githubusercontent.com/markshust/docker-magento/master/lib/template | bash
 
 # Download the version of Magento you want to use with:
-bin/download 2.4.4
+bin/download 2.4.5
 
 # or for Magento core development:
 # docker-compose -f docker-compose.yml up -d
@@ -226,6 +226,7 @@ It is recommended to keep your root docker config files in one repository, and y
 
 ## Custom CLI Commands
 
+- `bin/analyse`: Run `phpstan analyse` within the container to statically analyse code, passing in directory to analyse. Ex. `bin/analyse app/code`
 - `bin/bash`: Drop into the bash prompt of your Docker container. The `phpfpm` container should be mainly used to access the filesystem within Docker.
 - `bin/cache-clean`: Access the [cache-clean](https://github.com/mage2tv/magento-cache-clean) CLI. Note the watcher is automatically started at startup in `bin/start`. Ex. `bin/cache-clean config full_page`
 - `bin/cli`: Run any CLI command without going into the bash prompt. Ex. `bin/cli ls`
@@ -237,10 +238,11 @@ It is recommended to keep your root docker config files in one repository, and y
 - `bin/cron`: Start or stop the cron service. Ex. `bin/cron start`
 - `bin/dev-urn-catalog-generate`: Generate URN's for PhpStorm and remap paths to local host. Restart PhpStorm after running this command.
 - `bin/devconsole`: Alias for `bin/n98-magerun2 dev:console`
-- `bin/download`: Download specific Magento version from Composer to the container, with an optional type of either "community" (default) or "enterprise". Ex. `bin/download 2.4.4 enterprise`
+- `bin/download`: Download specific Magento version from Composer to the container, with an optional type of either "community" (default) or "enterprise". Ex. `bin/download 2.4.5 enterprise`
 - `bin/fixowns`: This will fix filesystem ownerships within the container.
 - `bin/fixperms`: This will fix filesystem permissions within the container.
 - `bin/grunt`: Run the grunt binary. Ex. `bin/grunt exec`
+- `bin/install-php-extensions`: Install PHP extension in the container. Ex. `bin/install-php-extensions sourceguardian`
 - `bin/magento`: Run the Magento CLI. Ex: `bin/magento cache:flush`
 - `bin/mftf`: Run the Magento MFTF. Ex: `bin/mftf build:project`
 - `bin/mysql`: Run the MySQL CLI with database config from `env/db.env`. Ex. `bin/mysql -e "EXPLAIN core_config_data"` or`bin/mysql < magento.sql`
@@ -248,6 +250,9 @@ It is recommended to keep your root docker config files in one repository, and y
 - `bin/n98-magerun2`: Access the [n98-magerun2](https://github.com/netz98/n98-magerun2) CLI. Ex: `bin/n98-magerun2 dev:console`
 - `bin/node`: Run the node binary. Ex. `bin/node --version`
 - `bin/npm`: Run the npm binary. Ex. `bin/npm install`
+- `bin/phpcbf`: Auto-fix PHP_CodeSniffer errors with Magento2 options. Ex. `bin/phpcbf <path-to-extension>`
+- `bin/phpcs`: Run PHP_CodeSniffer with Magento2 options. Ex. `bin/phpcs <path-to-extension>`
+- `bin/phpcs-json-report`: Run PHP_CodeSniffer with Magento2 options and save to `report.json` file. Ex. `bin/phpcs-json-report <path-to-extension>`
 - `bin/pwa-studio`: (BETA) Start the PWA Studio server. Note that Chrome will throw SSL cert errors and not allow you to view the site, but Firefox will.
 - `bin/redis`: Run a command from the redis container. Ex. `bin/redis redis-cli monitor`
 - `bin/remove`: Remove all containers.
@@ -317,7 +322,7 @@ Copy `src/auth.json.sample` to `src/auth.json`. Then, update the username and pa
 
 ### Email / Mailcatcher
 
-View emails sent locally through Mailcatcher by visiting [http://{yourdomain}:1080](http://{yourdomain}:1080). During development, it's easiest to test emails using a third-party module such as [https://github.com/mageplaza/magento-2-smtp](Mageplaza's SMTP module). Set the mailserver host to `mailcatcher` and port to `1080`.
+View emails sent locally through Mailcatcher by visiting [http://{yourdomain}:1080](http://{yourdomain}:1080). During development, it's easiest to test emails using a third-party module such as [Mageplaza's SMTP module](https://github.com/mageplaza/magento-2-smtp). In order to use mailcatcher, set the mailserver host to `mailcatcher` and set port to `1025`. Note that this port is different from the mailcatcher interface to read the emails.
 
 ### Redis
 
@@ -340,6 +345,10 @@ Use the following lines to enable Redis on existing installs:
 You may also monitor Redis by running: `bin/redis redis-cli monitor`
 
 For more information about Redis usage with Magento, <a href="https://devdocs.magento.com/guides/v2.4/config-guide/redis/redis-session.html" target="_blank">see the DevDocs</a>.
+
+### PhpMyAdmin
+
+PhpMyAdmin is built into the `docker-compose.dev.yml` file. Simply open `http://localhost:8080` in a web browser.
 
 ### Xdebug & VS Code
 
@@ -482,6 +491,69 @@ For debugging, you can connect to the selenium image using a VCN client.
 - Run `bin/mftf doctor` to validate all sections are setup correctly.
 
 Find more info [here](https://devdocs.magento.com/mftf/docs/getting-started.html) about mftf configuration.
+
+### Grunt + LiveReload for Frontend Development
+
+#### Create a new theme and make it active
+
+Create your new theme at `app/design/frontend/VendorName/theme-name`, with the related `composer.json`, `registration.php` and `theme.xml` files.
+
+Make your new theme active at Admin > Content > Design > Configuration. Click the Edit button next to Global Scope, and set the Applied Theme to your new theme name, and click Save Configuration.
+
+#### Load the LiveReload client file
+
+To create a connection to LiveReload, you'll need to insert the LiveReload script into your theme. You can do this by creating a file in your theme at `Magento_Theme/layout/default_head_blocks.xml` with the contents:
+
+```xml
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <script defer="true" src="/livereload.js?port=443" src_type="url"/>
+    </head>
+</page>
+```
+
+The "?port=443" parameter is important, otherwise the `livereload.js` script won't work.
+
+While we're at it, let's also create an initial LESS file so we have something to test. Create a new file in your theme at `web/css/source/_extend.less` with the contents:
+
+```css
+body {
+    background: white;
+}
+```
+
+You'll need to clear the Magento cache to enable your module, and make sure this layout XML update is properly loaded.
+
+Your new theme should now be active at `https://yourdomain.test`. Since this is a new theme, it should appear the same as the parent theme defined in your theme.xml file, which is usually Blank.
+
+#### Set up Grunt
+
+Run `bin/setup-grunt`. This will set up the Grunt configuration files for your new theme. It's important to run this step after setting up your new theme, not before.
+
+#### Start the Grunt watcher
+
+Grunt can watch for filesystem changes by running `bin/grunt watch`. You can optionally pass in the `--verbose` or `-v` flag to toggle verbose mode on. This will let you know what's going on under the hood, so you can be sure it is compiling & watching the correct files, and updating them as changes are made.
+
+#### LiveReload Browser extension
+
+Running the `grunt watch` process also spawns the LiveReload server. Your browser needs to connect to this server, and this is done by installing the [LiveReload browser extension](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en).
+
+In your browser, be sure to also open the Google Chrome Dev Tools, go to the Network tab, and click "Disable cache". This will ensure the browser does not long-cache static file assets, such as JavaScript & CSS files, which is important during development.
+
+Ensure the LiveReload browser icon has been toggled on, and refresh the page. We can confirm the LiveReload script is loaded by going to the Network tab and ensuring the `livereload.js` file is loaded, and that it also spawns off a new websocket request to `/livereload`.
+
+#### Test LiveReload
+
+Since this is all set, let's update the CSS file to a different background color:
+
+```css
+body {
+    background: blue;
+}
+```
+
+Upon saving this file, we will see the Grunt watcher detect the changes, and your browser should automatically load the new style without you needing to refresh the page, and without a full browser refresh.
 
 ## Credits
 
